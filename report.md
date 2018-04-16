@@ -19,7 +19,7 @@ The goals / steps of this project are the following:
 [image5]: ./examples/RoadWork.jpg "Traffic Sign 5"
 [image6]: ./examples/RightOnly.jpg "Traffic Sign 6"
 
-[img_visualization]: ./examples/visualization.jpg "Exploratory visualization"
+[img_visualization]: ./examples/visualization.png "Exploratory visualization"
 [img_softmax]: ./examples/softmax_output.jpg "Softmax Output"
 
 #### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
