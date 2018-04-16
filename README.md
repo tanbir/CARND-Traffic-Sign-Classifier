@@ -1,58 +1,183 @@
 ## Project: Build a Traffic Sign Recognition Program
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-Overview
----
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to classify traffic signs. You will train and validate a model so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After the model is trained, you will then try out your model on images of German traffic signs that you find on the web.
+**Build a Traffic Sign Recognition Project**
 
-We have included an Ipython notebook that contains further instructions 
-and starter code. Be sure to download the [Ipython notebook](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb). 
-
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
-
-To meet specifications, the project will require submitting three files: 
-* the Ipython notebook with the code
-* the code exported as an html file
-* a writeup report either as a markdown or pdf file 
-
-Creating a Great Writeup
----
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/481/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
-
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
-
-The Project
----
 The goals / steps of this project are the following:
-* Load the data set
+* Load the data set (see below for links to the project data set)
 * Explore, summarize and visualize the data set
 * Design, train and test a model architecture
 * Use the model to make predictions on new images
 * Analyze the softmax probabilities of the new images
 * Summarize the results with a written report
 
-### Dependencies
-This lab requires:
 
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+[//]: # (Image References)
+[image1]: ./examples/11_Rightofway.jpg "Traffic Sign 1"
+[image2]: ./examples/12_PriorityRoad.jpg "Traffic Sign 2"
+[image3]: ./examples/14_Stop.jpg "Traffic Sign 3"
+[image4]: ./examples/17_Noentry.jpg "Traffic Sign 4"
+[image5]: ./examples/25_RoadWork.jpg "Traffic Sign 5"
+[image6]: ./examples/33_RightOnly.jpg "Traffic Sign 6"
 
-The lab environment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
+[img_visualization]: ./examples/visualization.png "Exploratory visualization"
+[img_softmax]: ./examples/softmax_output.png "Softmax Output"
 
-### Dataset and Repository
+Here is a link to my [project code](https://github.com/tanbir/CARND-Traffic-Sign-Classifier/blob/master/Traffic_Sign_Classifier.ipynb)
 
-1. Download the data set. The classroom has a link to the data set in the "Project Instructions" content. This is a pickled dataset in which we've already resized the images to 32x32. It contains a training, validation and test set.
-2. Clone the project, which contains the Ipython notebook and the writeup template.
-```sh
-git clone https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project
-cd CarND-Traffic-Sign-Classifier-Project
-jupyter notebook Traffic_Sign_Classifier.ipynb
-```
+### Data Set Summary & Exploration
 
-### Requirements for Submission
-Follow the instructions in the `Traffic_Sign_Classifier.ipynb` notebook and write the project report using the writeup template as a guide, `writeup_template.md`. Submit the project code and writeup document.
+#### 1. Basic summary of the data set. 
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+I used the pandas library to calculate summary statistics of the traffic
+signs data set:
+
+* Number of training examples = 34799
+* Number of validation examples = 4410
+* Number of testing examples = 12630
+* Image data shape = (32, 32, 3)
+* Number of classes = 43
+
+#### 2. Exploratory visualization of the dataset.
+
+Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+
+![alt text][img_visualization]
+
+### Design and Test a Model Architecture
+
+#### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
+
+* The first step of preprocessing was to convert the images into grayscale:
+    * The reference paper of Sermanet and LeCun suggests that the preprocessing worked well
+    * Single channel greatly reduced the training time (I used CPU only)
+    * This operation is done using the function convert_to_gray(X)
+        * Training dataset shape before preprocessing:  (34799, 32, 32, 3)
+        * Training dataset shape after preprocessing:  (34799, 32, 32, 1)
+        * Test dataset shape before preprocessing:  (12630, 32, 32, 3)    
+        * Test dataset shape after preprocessing:  (12630, 32, 32, 1)
+* The second step was to normalize the data in the range [-1, 1].
+    * This operation is done using the function normalize(X)
+        * Training data mean before preprocessing:  82.677589037
+        * Training data mean aftre preprocessing:  -0.354081335648
+        * Test data mean before preprocessing:  82.1484603612
+        * Test data mean aftre preprocessing:  -0.358215153428  
+* As a third step, I have augmented the training dataset with randomly scaled and translated images for classes with less than 300 images
+    * This operation is done using the function augment(...) function in the class Augment
+        * Initially tried adding random brightness, but later removed as performance did not improve
+        * Training dataset shape after augmentation:  (37199, 32, 32, 1)
+        * Training data mean aftre augmentation:  -0.348499794801
+
+#### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+
+For convenience of use, I have doen the following:
+* Keras-like wrapper functions are created for adding layers to the model
+* The Train, Validate, Test mechanism are all integrated within the Model class
+* In the LeNet architecture, I have replaced the 5x5 Convolution (input = 5x5x16 and output = 1x1x400) with three Convolution layers consecutively 2x2, 3x3, and 2x2.
+
+My version of LeNet has the following layers:
+
+
+| Layer | Description | Input | Output | Strides | 
+|:-----:|:-----------:|:-----:|:------:|:-------:|
+| Convolution | 5x5 | 32x32x1 | 28x28x6 | [1,1] | 
+| Activation | ReLU |  |  |  | 
+| MaxPool | 2x2 | 28x28x6 | 14x14x6 | [2, 2] |
+| Convolution | 5x5 | 14x14x6 | 10x10x16 | [1,1] | 
+| Activation | ReLU |  |  |  | 
+| MaxPool | 2x2 | 10x10x16 | 5x5x16 | [2, 2] |
+| Convolution | 2x2 | 5x5x16 | 4x4x50 | [1,1] | 
+| Activation | ReLU |  |  |  | 
+| Convolution | 3x3 | 4x4x50 | 2x2x100 | [1,1] | 
+| Activation | ReLU |  |  |  | 
+| Convolution | 2x2 | 2x2x100 | 1x1x400 | [1,1] | 
+| Activation | ReLU |  |  |  | 
+| Flatten | | 1x1x400  | 400 |  | 
+| Dropout | keep_prob=0.5 |  |  |  | 
+| Dense | ReLU | 400 | 200 |  | 
+| Dense | ReLU | 200 | 43 |  | 
+| Softmax |  |  |  |  | 
+ 
+
+
+#### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
+
+I have used Adam optimizer and with the following parameter settings:
+* Epochs: 80
+* Batch size: 100
+* Learning rate: 0.0005
+* Mean and Standard deviation: 0.0 and 0.1, respectively
+* Dropout (keep) probability: 0.5
+
+#### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
+
+My final model results were:
+* Training set accuracy: 100.0%
+* Validation set accuracy: 97.4%
+* Test set accuracy: 95.1%
+
+The model is saved only if the validation score improved.
+
+I have used the LeNet Architecture as a basis for my architecture. Then I have obtained iterative improvements in validation and test accuracies as follows:
+* Feature extraction part:
+    * Attempt 1: Single convolution layer before flattening: 5x5 Convolution. Input = 5x5x16. Output = 1x1x400.
+    * Attempt 2: Replace Attempt 1 layer with two convolution layers 
+        * 4x4 Convolution. Input = 5x5x16. Output = 2x2x100.
+        * 2x2 Convolution. Input = 2x2x100. Output = 1x1x400.
+    * Attempt 3: Replace Attempt 2 layer with three convolution layers 
+        * 2x2 Convolution. Input = 5x5x16. Output = 4x4x50.
+        * 3x3 Convolution. Input = 4x4x50. Output = 2x2x100.
+        * 2x2 Convolution. Input = 2x2x100. Output = 1x1x400.
+* Classification part:
+    * Attempt 1: Dense(400, 172) -> Dense(172, 86) -> Dense(86, 43)
+    * Attempt 2: Dense(400, 200) -> Dropout() -> Dense(200, 43)    
+    * Adding a dropout helped avoid overfitting and in turn improved test accuracy
+* Parameter tuning part:
+    * Final dropout probability: 0.5
+    * Final learning rate: 0.0005
+    
+* Underfitting was not a problem in all the attempts
+
+* I think the model is performing quite well as all three of Training, Validation, and Test accuracies are more than 95.1%
+
+ 
+### Test a Model on New Images
+
+#### 1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
+
+Here are six German traffic signs that I found on the web:
+
+![alt text][image1] ![alt text][image2] ![alt text][image3] 
+![alt text][image4] ![alt text][image5] ![alt text][image6] 
+
+#### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
+
+Here are the results of the prediction:
+
+| Image			        |     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Rightofway      		| Rightofway   									| 
+| PriorityRoad			| PriorityRoad									|
+| Stop					| Stop											|
+| Noentry	      		| Noentry    					 				|
+| RoadWork   			| RoadWork           							|
+| RightOnly   			| RightOnly           							|
+
+
+
+* Better than the 97.4% validation accuracy and 95.1% test accuracy
+* More real-world data points would decrease the (6 images) accuracy from 1.0
+* Given that the images are quite clear compared to several training set images, it is likely that the model will work well on random real world German traffic signal images
+
+#### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+
+The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+
+* The model predicted all 6 images correctly (with 100% accuracy)
+
+[img_softmax]
+
+### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
+#### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+
 
