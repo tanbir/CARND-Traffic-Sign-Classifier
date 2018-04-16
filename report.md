@@ -12,15 +12,15 @@ The goals / steps of this project are the following:
 
 
 [//]: # (Image References)
-[image1]: ./examples/Rightofway.jpg "Traffic Sign 1"
-[image2]: ./examples/PriorityRoad.jpg "Traffic Sign 2"
-[image3]: ./examples/Stop.jpg "Traffic Sign 3"
-[image4]: ./examples/Noentry.jpg "Traffic Sign 4"
-[image5]: ./examples/RoadWork.jpg "Traffic Sign 5"
-[image6]: ./examples/RightOnly.jpg "Traffic Sign 6"
+[image1]: ./examples/11_Rightofway.jpg "Traffic Sign 1"
+[image2]: ./examples/12_PriorityRoad.jpg "Traffic Sign 2"
+[image3]: ./examples/14_Stop.jpg "Traffic Sign 3"
+[image4]: ./examples/17_Noentry.jpg "Traffic Sign 4"
+[image5]: ./examples/25_RoadWork.jpg "Traffic Sign 5"
+[image6]: ./examples/33_RightOnly.jpg "Traffic Sign 6"
 
 [img_visualization]: ./examples/visualization.png "Exploratory visualization"
-[img_softmax]: ./examples/softmax_output.jpg "Softmax Output"
+[img_softmax]: ./examples/softmax_output.png "Softmax Output"
 
 #### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
 
